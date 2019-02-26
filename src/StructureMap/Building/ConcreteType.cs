@@ -134,7 +134,7 @@ namespace StructureMap.Building
         {
             if (value == null)
             {
-                if (dependencyType.IsSimple())
+                if (dependencyType.IsNonNullableSimple())
                 {
                     return new DependencyProblem
                     {

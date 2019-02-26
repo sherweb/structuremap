@@ -103,7 +103,7 @@ namespace StructureMap.Pipeline
             return argument;
         }
 
-        private bool isMatchOnNullableInnerType(Type argumentType, Type dependencyType)
+        private static bool isMatchOnNullableInnerType(Type argumentType, Type dependencyType)
         {
             return argumentType.IsNullable() && dependencyType == argumentType.GetInnerTypeFromNullable();
         }
@@ -174,6 +174,10 @@ namespace StructureMap.Pipeline
             _dependencies.Insert(0, argument);
         }
 
+        private static bool isNullDependency(object @dependency)
+        {
+            return @dependency == null || @dependency is NullInstance;
+        }
 
         /// <summary>
         /// Add a dependency by parameter or property name and dependency type
@@ -183,15 +187,15 @@ namespace StructureMap.Pipeline
         /// <param name="dependency"></param>
         public void Add(string name, Type type, object @dependency)
         {
-            if (type.IsSimple())
+            if (isNullDependency(@dependency) && type.IsNonNullableSimple())
             {
-                if (@dependency == null)
-                {
-                    throw new ArgumentNullException("@dependency",
-                        "Dependency valueOrInstance cannot be null for a simple argument of type '{1}' with name: '{0}".ToFormat(
-                            name, type));
-                }
+                throw new ArgumentNullException("@dependency",
+                    "Dependency valueOrInstance cannot be null for a simple argument of type '{1}' with name: '{0}".ToFormat(
+                        name, type));
+            }
 
+            if (!isNullDependency(@dependency) && type.IsSimple())
+            {
                 if (@dependency is LambdaInstance)
                 {
                     if (@dependency.As<LambdaInstance>().ReturnedType != type)
@@ -201,7 +205,7 @@ namespace StructureMap.Pipeline
                                 type.GetFullName()));
                     }
                 }
-                else if (@dependency.GetType() != type)
+                else if (@dependency.GetType() != type && !isMatchOnNullableInnerType(type, dependency.GetType()))
                 {
                     try
                     {
@@ -230,7 +234,7 @@ namespace StructureMap.Pipeline
             {
                 Name = name,
                 Type = type,
-                Dependency = @dependency
+                Dependency = @dependency ?? new NullInstance()
             });
         }
 

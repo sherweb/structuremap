@@ -256,6 +256,13 @@ namespace StructureMap.TypeRules
             return type.GetTypeInfo().IsPrimitive || IsString(type) || type.GetTypeInfo().IsEnum || IsNullable(type);
         }
 
+        public static bool IsNonNullableSimple(this Type type)
+        {
+            if (type == null) return false;
+
+            return type.GetTypeInfo().IsPrimitive || type.GetTypeInfo().IsEnum;
+        }
+
         public static bool IsInterfaceOrAbstract(this Type type)
         {
             return type.GetTypeInfo().IsInterface || type.GetTypeInfo().IsAbstract;
