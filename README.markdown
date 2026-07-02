@@ -40,7 +40,7 @@ to resolve nuget dependencies.
 
 Note:
 
-The StructureMap team uses Rake internally and on the [CI server](http://build.fubu-project.org/project.html?projectId=StructureMap3), but **Rake is no longer necessary in any way for developing with the StructureMap codebase**. 
+StructureMap uses a dotnet-only workflow for local builds, tests, and package generation.
 
 Please post any questions or bugs to the
 [StructureMap Users mailing list](https://groups.google.com/forum/#!forum/structuremap-users).
@@ -60,7 +60,8 @@ The actual web content is published manually to the [structuremap.github.com rep
 
 To run the documentation website locally, from the command line at the root of the StructureMap repository, either:
 
-1. `rake docs` - If you're comfortable with Rake
 1. `dotnet restore && dotnet stdocs run` - do note that this will default to the version being 1.0, but the correct version will be applied when it's actually published
+
+Manual package generation steps are documented in [manual-package-generation.md](manual-package-generation.md).
 
 
